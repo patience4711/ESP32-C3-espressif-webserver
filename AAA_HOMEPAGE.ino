@@ -86,6 +86,13 @@ const char HOMEPAGE[] PROGMEM = R"=====(
 
 <script>
 
+document.addEventListener("visibilitychange", function() {
+    if (!document.hidden){
+        console.log("Browser tab is visible")
+        getData(); // update the page 
+    } 
+});
+
 function savePWM() {
 var pwm = document.getElementById('demoLPM').innerHTML;
 if(!confirm("dimvalue = " + pwm + ", make this default?") ) {return};
