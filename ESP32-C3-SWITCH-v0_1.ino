@@ -166,6 +166,8 @@ void setup() {
   //methods we can use with pwm
   //ledc_set_freq(LEDC_MODE, LEDC_TIMER, 2500); adapt frequency
   //uint32_t ledc_get_duty(ledc_mode_t speed_mode, ledc_channel_t channel)
+  //ledc_set_fade_with_time(ledc_mode_t speed_mode, ledc_channel_t channel, uint32_t target_duty, int max_fade_time_ms)
+  
   //ledc_channel_config(LEDC_CHANNEL)
   // with ledc_set_duty() and ledc_update_duty we change dutycycle
   set_pwm(duty); //to set and update the pwm
@@ -334,6 +336,7 @@ void ledblink(int i, int wacht) {
     } 
 
     void eventSend(byte what) {
+    delay(800); // because first fading must be completed 
     const static char *sse_format = "data:%s\r\n\r\n";
     char sse_buf[50];
     if (mySocketFD > 0) {
@@ -374,7 +377,8 @@ void ledblink(int i, int wacht) {
       // we invert the dutyvalue
       //ledcWrite(0,256-duty);
       inschakeltijdstip = now();
-      set_pwm(duty);
+      //set_pwm(duty);
+      fade_pwm(duty);
       //ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 8191);
       // Update duty to apply the new value
       //ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
@@ -389,11 +393,12 @@ void ledblink(int i, int wacht) {
     void ledsOffNow(bool zend, bool check, String who) {
         //ledcWrite(0,256);
         //soft_off();
-        set_pwm(0);
+        //set_pwm(0);
+        fade_pwm(0);
         //ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0);
         // Update duty to apply the new value
         //ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
-        Serial.println("off: duty cycle set to " + String(ledc_get_duty(LEDC_MODE,LEDC_CHANNEL)));
+        consoleOut("off: duty cycle set to " + String(ledc_get_duty(LEDC_MODE,LEDC_CHANNEL)));
         ledState = 0;
         if( zend ) { sendMqttswitch(); }// mqtt switch state
         if( check ) {checkTimers();} // disarm timers that are on  
@@ -469,10 +474,18 @@ void ledblink(int i, int wacht) {
         .hpoint         = 0,
     };
     ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
+    ledc_fade_func_install(0);
+    // this callback when fading ready
 }
 
 void set_pwm(int value) {
   ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, value);
   // Update duty to apply the new value
   ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
+}
+
+void fade_pwm(int value) {
+  // LEDC_MODE, LEDC_CHANNEL, target duty, time = set in ms
+  ledc_set_fade_with_time(LEDC_MODE, LEDC_CHANNEL, value, 1000); 
+  ledc_fade_start(LEDC_MODE, LEDC_CHANNEL, LEDC_FADE_NO_WAIT);
 }

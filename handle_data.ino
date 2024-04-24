@@ -39,13 +39,12 @@ void handle_data(httpd_req_t *req)
       consoleOut("duty cycle set to " + String( ledc_get_duty(LEDC_MODE, LEDC_CHANNEL) ) ); 
       eventSend(0); //update the webpage
       httpd_resp_send(req, NULL, 0);
-      // return; 
-      //free(buf);
+
       } else    
     if(strstr(buf, "knop")) {
     // link = getData?knop
     consoleOut("knop update");
-     if(ledc_get_duty(LEDC_MODE,LEDC_CHANNEL) > 0) ledState = true; //(aan)
+     //if(ledc_get_duty(LEDC_MODE,LEDC_CHANNEL) > 0) ledState = true; //(aan)
      consoleOut("getData?knop dvName = " + String(dvName));
      String json = "{";
      json += "\"name\":\"" + String(dvName) + "\",";
