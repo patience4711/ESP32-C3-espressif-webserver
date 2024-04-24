@@ -16,6 +16,9 @@ Is has some interesting features such as:
 - can send mosquitto messages and react on mqtt
 - the frontpage is kep up-todate with events
 
+### events ###
+The webinterface can send requests to the server for data in order to display the state of an led for instance. Tese requests are send when the page is opened or becomes visible in the browser. To keep up-to-date the page can request the data e.g every 10 seconds,  or we can set a refreshrate. Another way to accomplish this is that when something changed, the server sends an event to the webpage. The webinterface reacts with a request for data. This way there is less data traffic.
+
 There is binary in the files that you can use to flash the software. If you want to compile yourself, these are the settings i used.
 ![settings_s3](https://github.com/patience4711/ESP32-C3-espressif-webserver/assets/12282915/ce416448-dc20-4030-bfad-8f470de99bfb)
 
