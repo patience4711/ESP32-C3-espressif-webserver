@@ -11,6 +11,7 @@ Is has some interesting features such as:
 - it can be switched by a button or by setting the slider
 - a default dim value can be saved.
 - the on-swich uses always the last used dim value
+- soft on/off switching with a nice fade
 - a serial console with some system commands
 - 4 timers that can switch p.e. relative to sunrise
 - can send mosquitto messages and react on mqtt
