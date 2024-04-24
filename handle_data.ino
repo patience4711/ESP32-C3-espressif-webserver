@@ -33,13 +33,9 @@ void handle_data(httpd_req_t *req)
       consoleOut("param = " + String(param));
       //duty = duty * 100; // String(param).toInt() ?? from 0 to 8192 (2^13)
       //the slider goes to 82 so this could be 8200, //this makes the light go out so
-      
       inschakeltijdstip = now()-10;
-      ledState= 1;
+      if(duty == 0) ledState = 0; else ledState = 1;
       set_pwm(duty);
-      //ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, duty);
-         // Update duty to apply the new value
-      //ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
       consoleOut("duty cycle set to " + String( ledc_get_duty(LEDC_MODE, LEDC_CHANNEL) ) ); 
       eventSend(0); //update the webpage
       httpd_resp_send(req, NULL, 0);
