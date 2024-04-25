@@ -10,9 +10,9 @@
 //    WiFi.end();
      // we write a flag in EEPROM
      if( diagNose != 0 ) consoleOut(F("wifi disconnected"));
-//we try to overwrite the wifi creentials     
-const char* ssid = "dummy";
-const char* password = "dummy";
+    //we try to overwrite the wifi creentials     
+    const char* ssid = "dummy";
+    const char* password = "dummy";
     WiFi.begin(ssid, password);
     Serial.println(F("\nConnecting to dummy network"));
     int teller = 0;
@@ -50,7 +50,7 @@ if (actionFlag == 15) {
 }
 
 
-// mosquitto test **********************************************    
+    // mosquitto reconnect **********************************************    
     if (actionFlag == 24) { // set by the mqtt config page
         actionFlag = 0; //reset the actionflag
         MQTT_Client.disconnect();
@@ -61,7 +61,7 @@ if (actionFlag == 15) {
     }    
     if (actionFlag == 25) {
       actionFlag = 0; //reset the actionflag
-     // getTijd(); // recalculate time and automation after change of settings
+      getTijd(); // recalculate time and automation after change of settings
     }
 
     if (actionFlag == 31) { //triggered by the webpage zbtest
@@ -79,7 +79,7 @@ if (actionFlag == 15) {
     }
 
 
-    if (actionFlag == 49) { //triggered by console testmqtt
+    if (actionFlag == 49) { // triggered by link
         actionFlag = 0; //reset the actionflag
         ledblink(1,100);
         // always first drop the existing connection

@@ -109,12 +109,12 @@ int mySocketFD;
   char  Mqtt_Port[5] =  {"1883"};
   int   Mqtt_switchIDX = 123;
   int   Mqtt_Format = 0; 
-  int   event = 0;
   long  mqtt_lastConnect = 0;
 
   //int dst;
 
   //char messageHead[5];
+  int   event = 0; // a multi purpose variable
   int diagNose = 1; // initial true, can be set in serial (saved in eeprom)
   int tKeuze = 0;
   uint8_t actionFlag = 0;
@@ -132,9 +132,6 @@ int mySocketFD;
   #define LED_UIT    HIGH
   #define knop              0  //
   #define led_onb           8  // onboard led was 2
-  //#define ZB_RESET          5 // D5
-  //#define ZB_TX             17 // D8
-
   
   String toSend = ""; // we use this string only to send webpages
   int duty = 256; //pwm dutycycle
@@ -162,15 +159,13 @@ void setup() {
   pinMode(4, OUTPUT); // 
   digitalWrite(4, LOW); //
 
-  example_ledc_init(); //initialize pwm
+  ledc_init(); //initialize pwm
   //methods we can use with pwm
   //ledc_set_freq(LEDC_MODE, LEDC_TIMER, 2500); adapt frequency
   //uint32_t ledc_get_duty(ledc_mode_t speed_mode, ledc_channel_t channel)
   //ledc_set_fade_with_time(ledc_mode_t speed_mode, ledc_channel_t channel, uint32_t target_duty, int max_fade_time_ms)
-  
-  //ledc_channel_config(LEDC_CHANNEL)
-  // with ledc_set_duty() and ledc_update_duty we change dutycycle
-  set_pwm(duty); //to set and update the pwm
+  // set_pwm and fade_pwm
+  set_pwm(0); //led initial out 
   //ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0);
       // Update duty to apply the new value
   //ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
@@ -218,7 +213,7 @@ void setup() {
 //*                         LOOP
 //*****************************************************************************
 void loop() {
-  // erorchcks
+  // erorchecks
   int aantal = 0;
   if (dagbegintijd < 10000 && aantal < 3 && WiFi.status() == WL_CONNECTED) {
     getTijd(); // does all the calculations
@@ -277,10 +272,10 @@ if(!hasSwitched[0] && !hasSwitched[1] && !hasSwitched[2] && !hasSwitched[3] ) //
 void ledblink(int i, int wacht) {
   for(int x=0; x<i; x++) {
     digitalWrite(led_onb, LED_AAN);
-    ledcWrite(0,100);   
+    //ledcWrite(0,100);   
     delay(wacht);
     digitalWrite(led_onb, LED_UIT);
-    ledcWrite(0,256);
+    //ledcWrite(0,256);
     delay(wacht);
    }
 }
@@ -309,7 +304,7 @@ void ledblink(int i, int wacht) {
       int haha = 0;
       } data;
     EEPROM.get(0, data);
-    Serial.println("read value from EEPROM is " + String(data.str));
+    Serial.println("read value from EEPROM is " + String(data.str) + " " + String(data.haha));
     strcpy(requestUrl, data.str);
     diagNose = data.haha; // inverterkeuze
     EEPROM.commit();
@@ -336,7 +331,7 @@ void ledblink(int i, int wacht) {
     } 
 
     void eventSend(byte what) {
-    delay(800); // because first fading must be completed 
+    //delay(800); // because first fading must be completed 
     const static char *sse_format = "data:%s\r\n\r\n";
     char sse_buf[50];
     if (mySocketFD > 0) {
@@ -353,7 +348,8 @@ void ledblink(int i, int wacht) {
           }
       } else { consoleOut("no events socket available"); }
     }
-    // function to 
+
+    // function to send debug data to serial
     void consoleOut(String toLog) {
     // decide to log to serial or the console 
       if(diagNose == 1 ) 
@@ -379,71 +375,25 @@ void ledblink(int i, int wacht) {
       inschakeltijdstip = now();
       //set_pwm(duty);
       fade_pwm(duty);
-      //ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 8191);
-      // Update duty to apply the new value
-      //ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
-      //soft_on();
-      Serial.println("on: duty cycle set to " + String(ledc_get_duty(LEDC_MODE,LEDC_CHANNEL)));
+      consoleOut("on: duty cycle set to " + String(duty));
       ledState = 1;
       if( zend ) { sendMqttswitch(); }// mqtt switch state
       if( check ) {checkTimers();} // disarm timers that are on  
-      //Update_Log(who, "switched off");
       eventSend(0);
     }
     void ledsOffNow(bool zend, bool check, String who) {
-        //ledcWrite(0,256);
-        //soft_off();
         //set_pwm(0);
         fade_pwm(0);
-        //ledc_set_duty(LEDC_MODE, LEDC_CHANNEL, 0);
-        // Update duty to apply the new value
-        //ledc_update_duty(LEDC_MODE, LEDC_CHANNEL);
-        consoleOut("off: duty cycle set to " + String(ledc_get_duty(LEDC_MODE,LEDC_CHANNEL)));
+        consoleOut("off: duty cycle set to 0");
         ledState = 0;
         if( zend ) { sendMqttswitch(); }// mqtt switch state
         if( check ) {checkTimers();} // disarm timers that are on  
-        //Update_Log(who, "switched off");
         eventSend(0);
     }
- void  soft_on() {
-// we have to go from 256 to 256-duty (duty inverted)
-// if current duty is 130 we go from 256 to (256-130 = 126)=256-126 = 130 == duty
-// if current duty is 190 we go from 256 to (256-190 = 66)=256-66 = 190 == duty
-// the more step the loop counts, the lesser the delay should be so the greater
-// duty, the less steps
-// i experimented and it must be a value from 2 to 24
-
-// (256 + x ) / y = 12x( 10 + x) / y dus 256 + x = 12( 10+x ) 
-//  256 + x = 120 + 12x
-//  136 + x = 12x
-//  136 = 11x dus 136/11 = x=12,36
-
-  int del = speedCalc(duty);
-  for(int x=256; x>=256-duty; x--) {
-     ledcWrite(0,x);
-     delay(del); // was 10
-     }
- }
- void  soft_off() {
-// we have to go from (256-duty) to 256 (duty inverted)
-// if current duty is 130 we go from (256-130 = 126) to 256 = 256-126 = 130 == duty
-// if current duty is 190 we go from (256-130) to 256 = 66) =256-66 = 190 == duty
-  int del = speedCalc(duty);
-  for(int x=256-duty; x<257; x++) {
-     ledcWrite(0,x);
-     delay(del); // was 10
-     }
- }
- int speedCalc( int input) {
-  //Serial.println("speedcalc input = " + String(input));
-  //if(input > 150) {Serial.println("return 6"); return 6; } else if (input > 50) {Serial.println("return 8"); return 8;} else {Serial.println("return 10"); return 10;}
-  //Serial.println("return = " + String( int(26 - ( (input + 12.436)/11.18) )));
-  //return( 28 - ( (input + 40)/12) );
-  return( 28 - ( (input + 12.36)/11.18) );
- }
 
 
- static void example_ledc_init(void)
+// * * * * * * init ledc * * * * * * * * 
+ static void ledc_init(void)
 {
     // Prepare and then apply the LEDC PWM timer configuration
     ledc_timer_config_t ledc_timer = {

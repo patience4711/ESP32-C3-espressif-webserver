@@ -52,6 +52,13 @@ void handle_actions(httpd_req_t *req)
        httpd_resp_send(req, toSend.c_str(), HTTPD_RESP_USE_STRLEN); 
        return;
        } //else
+ 
+     if(strstr(buf, "mosqtest"))
+     { 
+       actionFlag=49;
+       confirm(); // loads toSend with some html
+       httpd_resp_send(req, toSend.c_str(), HTTPD_RESP_USE_STRLEN);
+     }
 // *****************************************************************
 // *                        ota update                             *
 // *****************************************************************

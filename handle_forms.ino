@@ -167,9 +167,78 @@ void handle_params(httpd_req_t *req)
           basisConfigsave();
           return;
           //}
-     } // end sava pwm
+     } // end save pwm
 
-   
+     if(strstr(buf, "ipchoice")) // 
+     { 
+       consoleOut("received a ip config form");
+       char param[QUERYKEY_MAX_LEN] = {0};
+       char static_ip2[16] = "";
+       IPAddress ipc = WiFi.gatewayIP();
+       char option[5] = {0};
+       //String optie = request->getParam("keuze")->value();
+       if (httpd_query_key_value(buf, "ipchoice", param, sizeof(param)) == ESP_OK) strcpy(option, param); //DHCP or STAT    
+       if (httpd_query_key_value(buf, "ipadd", param, sizeof(param)) == ESP_OK) strcpy(static_ip2, decode_uri(String(param)).c_str());    
+       //if (httpd_query_key_value(buf, "gwadd", param, sizeof(param)) == ESP_OK) strcpy(Mqtt_outTopic, decode_uri(String(param)).c_str());
+       //if (httpd_query_key_value(buf, "snadd", param, sizeof(param)) == ESP_OK) strcpy(Mqtt_Username, decode_uri(String(param)).c_str());
+ 
+       String ipcheck = String(static_ip2[0]) + "." + String(static_ip2[1]) + "." + String(static_ip2[2]);         
+      // see if dhcp is selected. if yes, empty static_ip2
+      if ( strstr(option, "DHCP" )) {
+            consoleOut("dhcp set, dropped static_ip, optie = " + String(option));
+            static_ip2[0] = '\0';
+           }
+          //we must check if ip has changed, this influences the confirm page
+          //when dhcp static_ip is zero-ed, so this is always true.
+          //how do we do this?
+          //We have the variable static_ip (from spiffs), we compare that with the supplied value
+          //If not equal, it has changed 
+           String test1 = String(static_ip);  
+           String test2 = String(static_ip2);
+           consoleOut("the teststrings are: " + test1 + " and " + test2);
+           consoleOut("read the confirm page in toSend");
+           toSend = FPSTR(CONFIRM_IP);
+           String adres="";
+           String zin="";
+           //bool reBoot = false;
+           //bool leegmaken = false;
+           
+           if (String(static_ip) != String(static_ip2) )
+           {
+              consoleOut("the IP has changed");
+              //static_ip=static_ip2;
+              strcpy(static_ip, static_ip2);
+    
+              // if an ip was entered we put the ip data in the confirmpage
+              if (static_ip[0] != '\0' && static_ip[0] != '0') 
+              {
+                 actionFlag = 10; // make it reboot in the loop
+                 adres = String(static_ip);
+                 if( diagNose != 0 ) consoleOut("the specified ip = " + adres);
+                 zin = F("The entered IP is <strong><a href='http://{adres1}'>http://{adres2}</a></strong>");
+                 zin += F("<br>Use the new IP adres in your browser or click the link.<br>");
+                 zin += F("<br>This page will close after a few seconds...");
+                 zin.replace("{adres1}" , adres);
+                 zin.replace("{adres2}" , adres);
+                 toSend.replace("#zin#" , zin);
+                 toSend.replace("{adres0}" , adres); // the address in the settimeout          
+              } 
+               else 
+              {
+                // if no ip is specified then we try to connect immediately 
+                 zin="IP not specified, this is unknown now !!<br><br>NOTE: the configuration modus (AP) is started<br>The led is lighted up. Connect to the AP<br>so you can find out the DHCP ip address.<br><br>You can close this page.<br><br></div>";
+                 adres ="/";   
+                 actionFlag = 11; //makes it reboot in AP mode
+                 toSend.replace("#zin#" , zin);
+                 toSend.replace("{adres0}" , adres);
+              }      
+           }
+         httpd_resp_send(req, toSend.c_str(), HTTPD_RESP_USE_STRLEN);
+         consoleOut("IPconfig saved");
+         wifiConfigsave();     
+         
+      }// end if ipchoice
+    
     consoleOut("if we are here something went wrong");
   } // end if buf_len >1
 } // end handle params

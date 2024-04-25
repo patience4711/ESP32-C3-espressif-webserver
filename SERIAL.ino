@@ -67,7 +67,7 @@ if(Serial.available() < 13 ) {
         if (strcasecmp(InputBuffer_Serial,"VARIABLES-DUMP")==0) {
           Serial.println("\ndump variables ! \n");
           Serial.println("duty = " + String(duty));
-          Serial.println("dvName = " + String(dvName));
+          Serial.println("Mqtt_Format = " + String(Mqtt_Format));
           Serial.println("dvName = " + String(dvName));
           Serial.println("dvName = " + String(dvName));
            delay(500);

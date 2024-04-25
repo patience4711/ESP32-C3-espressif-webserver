@@ -22,9 +22,9 @@ function submitF() {
 
 <div id='msect'>
 <div class='divstijl' style='height:62vh;'><br><center>
-<form id='fM' method='get' action='IPconfig' oninput='showSubmit();'>
+<form id='fM' method='get' action='parameters' oninput='showSubmit();'>
 <table><tr><td style='width:145px;'>IP configuration<td style='width:190px;'>
-<select name='keuze' class='sb1' id='choice' onchange='showTable()'>
+<select name='ipchoice' class='sb1' id='choice' onchange='showTable()'>
 <option value="DHCP" option1>DHCP IP</option>
 <option value="STAT" option2>STATIC IP</option>
 </select>
@@ -32,12 +32,12 @@ function submitF() {
 
 <div id='tabel'><table>
 <tr><td style='width:145px;'>IP address<td style='width:190px;'>
-<input class='inp5' name='ip' placeholder='leeg = DHCP' value='{ip}' pattern = '^\b({patroon})([0-9]{1,2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])$' title='must be derived from ip router'>
+<input class='inp5' name='ipadd' placeholder='leeg = DHCP' value='{ip}' pattern = '^\b({patroon})([0-9]{1,2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])$' title='must be derived from ip router'>
 </input></tr>
 <tr><td>IP address router<td>
-<input class='inp5' name='gw' value='{gw}' readonly></input></tr>
+<input class='inp5' name='gwadd' value='{gw}' readonly></input></tr>
 <tr><td>subnet mask<td>
-<input class='inp5' name='sn' value='{sn}' readonly></input></tr>
+<input class='inp5' name='snadd' value='{sn}' readonly></input></tr>
 </table>
 </form>
 <p>NOTE: a fixed IP has to be correct, or empty.</p></center>
@@ -47,7 +47,7 @@ function submitF() {
 </body></html>
 )=====";
 
-void zendPageIPconfig() {
+void zendPageIPconfig(httpd_req_t *req) {
    //if( diagNose != 0 )("we are now on zendPageIPconfig");
    //loginAdmin(AsyncWebServerRequest *request);
    toSend = FPSTR(HTML_HEAD);
@@ -87,9 +87,11 @@ void zendPageIPconfig() {
   patroon += ")([0-9]{1,2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])";
   //Serial.print("patroon = "); Serial.print(patroon);
   toSend.replace("{patroon}" , patroon);
-  // de melding bij verkeerd invullen
+  // the notify when wrong input
   deel_a += "x";
   toSend.replace("{title}" , deel_a);  
+
+  httpd_resp_send(req, toSend.c_str(), HTTPD_RESP_USE_STRLEN);
 }
 
 //void handleIPconfig(AsyncWebServerRequest *request) {
@@ -101,7 +103,7 @@ void zendPageIPconfig() {
 //  // almost impossible to enter a wrong IP. no need to check
 //  // collect the serverarguments
 //  
-//  strcpy( static_ip2, request->getParam("ip")->value().c_str() );
+//  V strcpy( static_ip2, request->getParam("ip")->value().c_str() );
 //  
 //  String ipcheck = String(static_ip2[0]) + "." + String(static_ip2[1]) + "." + String(static_ip2[2]);   
 //  //Serial.println(F("\ipcheck = " + ipcheck ));
@@ -111,17 +113,10 @@ void zendPageIPconfig() {
 //  bool reBoot = false;
 //  bool leegmaken = false;
 //
-//  // see if dhcp is selected. if yes, empty static_ip2
-//  String optie = request->getParam("keuze")->value();
-//  //String optie = server.arg("keuze");
-//  if ( optie == "DHCP") {
-//      if( diagNose != 0 ) consoleOut("dhcp set, dropped static_ip, optie = " + optie);
-//      //if( diagNose != 0 ) consoleOut(optie);
-//      static_ip2[0] = '\0';
-//    }
+
 //
-//    //we must chec if ip has changed, this influences the confirm page
-//    //when dhcp static_ip is zeroed, so this is alway treu.
+//    //we must check if ip has changed, this influences the confirm page
+//    //when dhcp static_ip is zeroed, so this is always treu.
 //    //how do we do this?
 //    //We have the variable static_ip, we compare that with the supplied value
 //    //If not equal, it has changed 

@@ -18,8 +18,9 @@ bool mqttConnect() {   //
       {
          //connected, so subscribe to inTopic (not for thingspeak)
         if( Mqtt_Format != 0 ) {
-        if(  MQTT_Client.subscribe ( "ESP32-SWITCH/in" ) ) {
-               Serial.println("subscribed to ESP32-SWITCH/in");
+        String sub = getChipId(false) + "/in"; // to get a unique id
+        if(  MQTT_Client.subscribe ( sub.c_str() ) ) {
+               Serial.println("subscribed to " + sub);
            }
         }
          Serial.println(F("mqtt connected"));
@@ -41,7 +42,7 @@ bool mqttConnect() {   //
 }
 
 // *************************************************************************
-//                   process received mqtt
+//                   process received mqtt message
 // *************************************************************************
 
 void MQTT_Receive_Callback(char *topic, byte *payload, unsigned int length)
@@ -66,6 +67,13 @@ void MQTT_Receive_Callback(char *topic, byte *payload, unsigned int length)
         if(onoff == "on") ledsOnNow(true,false,"mqtt"); 
         if(onoff == "off") ledsOffNow(true,true,"mqtt");
     }
+    if( doc.containsKey("duty") )
+    {
+        int dutycl = doc["duty"]; 
+        Serial.println( "got message: {\"duty\":\"" + String(dutycl) + "\"}" );
+        if(dutycl != 0) { duty = dutycl; ledsOnNow(true,false,"mqtt"); } 
+        else { duty=0; ledsOffNow(true,true,"mqtt"); }
+    }
 }
 
 bool mqttGeldig() {
@@ -87,10 +95,18 @@ void sendMqttswitch()
   }    
 // update switch state
   StaticJsonDocument<256> doc;
-  //doc["command"] = "switchlight";
-  doc["idx"] = Mqtt_switchIDX;
-  if (ledState == 0) { doc["nvalue"] = 0; } else { doc["nvalue"] = 1;}
   char out[64];
-  int b =serializeJson(doc, out);
-  MQTT_Client.publish ( Mqtt_outTopic, out );
+
+  if( Mqtt_Format == 1) { 
+     doc["idx"] = Mqtt_switchIDX;
+     if (ledState == 0) { doc["nvalue"] = 0; } else { doc["nvalue"] = 1;}
+     int b =serializeJson(doc, out);
+  } else
+  if( Mqtt_Format == 2) { 
+     doc["idx"] = Mqtt_switchIDX;
+     doc["state"] = ledState;
+     doc["duty"] = duty;
+     int b =serializeJson(doc, out);
+  }       
+   MQTT_Client.publish ( Mqtt_outTopic, out );
 }

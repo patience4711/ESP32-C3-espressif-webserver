@@ -241,116 +241,17 @@ const char CONFIRM_IP[] PROGMEM = R"=====(
 <!DOCTYPE html><html><head><meta charset='utf-8'>
 <title>ESP-ECU</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="/STYLESHEET_HOME">
+<link rel="stylesheet" type="text/css" href="/SHOWHTML?style">
 </head>
 <body style='font-size:16px;'>
-<script type='text/javascript'>setTimeout(function(){ window.location.href='http://{adres0}/'; }, 6000 ); </script>
+<script type='text/javascript'>setTimeout(function(){ window.location.href='/'; }, 6000 ); </script>
 <center>
 <h1>SAVE IP SETTINGS</h1><div class='lijnstijl'></div><br><br><div class='divstijl'>
 The IP settings are saved. <br><br>
-Your Esp device is going to reboot. <strong>Wait util the led has blinked 3 times!</strong><br><br>
+Your Esp device is going to reboot. Please watch the blue signal led. 
+<br><strong>When it blinked 3 times! you are connected<br>
+When it stays on, the wifi config AP is opened.</strong> <br><br>
 </body></html>
-)=====";
-
-const char CONFIRM_INV[] PROGMEM = R"=====(
-<!DOCTYPE html><html><head><meta charset='utf-8'>
-<title>ESP-ECU</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="/STYLESHEET_HOME">
-</head>
-<body style='font-size:16px;'>
-<script type='text/javascript'>setTimeout(function(){ window.location.href='/INV_CONFIG';}, 6000 ); </script>
-<center>
-<h1>PROCESSING THE INVERTER DATA...</h1><div class='lijnstijl'></div><br><br>
-<div class='divstijl'>
-The inverterdata are saved.<br><br>
-In a moment the device is going to reboot.<br><br> 
-You will be redirected to the inverter config page. 
-
-<br><br>
-</div>
-<br><br> <a href='/SHOWHTML?back'><span class='close'>&times;</span></a></body></html>
-)=====";
-
-
-//const char UPDATE_FORM[] PROGMEM = R"=====(
-//<!DOCTYPE html><html><head><meta charset='utf-8'>
-//<link rel="stylesheet" type="text/css" href="/STYLESHEET_HOME">
-//<style> 
-//input {
-//  font-size:3vw;
-//}  
-//</style>
-//<script>
-//function showDiv() {
-//document.getElementById('main').style.background="#b3ffd9";  
-//document.getElementById('hiddendiv').innerHTML="<marquee><kop>updating firmware, do not interrupt .....</kop></marquee>";
-//}
-//</script></head>
-//<body><div id='main'>
-//<center><kop> HANSIART FIRMWARE UPDATER</kop>
-//<br><br><br><table><tr><td>
-//<form method='POST' action='/handleFwupdate' enctype='multipart/form-data' onsubmit='showDiv()'>
-//<input id='inP' type='file' name='update' pattern='\S+' title='cannot be empty' required>
-//<tr><td><br><tr><td><input type='submit' value='update'></form>
-//<tr><td><br><tr><td><a href='/SW=BACK'><input type='submit' value='cancel'></table><br>
-//<div id='hiddendiv' style='margin: 50px; width: 40%; background:#e7f2bd;'></div><br><br>
-//</div></center></body></html>    
-//)=====";
-
-const char WAIT_PAIR[] PROGMEM = R"=====(
-<!DOCTYPE html><html><head><meta charset='utf-8'>
-</head><body onload="loadScript()">
-<center><br><br><h2>PAIRING INVERTER {#}</h2>
-<br><br><br>
-<div id="marq" style='margin: 50px; width: 40%; background:#e7f2bd;'>
-<marquee><h3>pairing, do not interrupt .....</h3></marquee>
-</div>
-<div id="hiddenSucc" style="display:none"<br><br><br>
-<h3>The pairing succeeded.
-<br><br><br><a href="/LOGPAGE">click here</a></h3>
-</div>
-<div id="hiddenFail" style="display:none"<br><br><br>
-<h3>The pairing failed.
-<br><br><br><a href="/LOGPAGE">click here</a></h3>
-</div>
-
-<script>
-function loadScript() {
-  getData();
-  loadData();
-}
-
-setInterval(function loadData() {
- getData()
-},9000);
-
-function getData() {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      var antwoord = this.responseText;
-      var obj = JSON.parse(antwoord);
-      var invID = obj.invID;
-      
-      if( invID != "1111" ) {
-          if( invID == "0000" ) {
-            document.getElementById("marq").style.display = "none";
-            document.getElementById("hiddenFail").style.display = "block";
-            setTimeout(function(){ window.location.href='/'; }, 5000 );
-          } else {
-            document.getElementById("marq").style.display = "none";
-            document.getElementById("hiddenSucc").style.display = "block";
-            setTimeout(function(){ window.location.href='/'; }, 5000 );
-          }
-       }
-    }
-  }
-  xhttp.open("GET", "get.Paired", true);
-  xhttp.send();
-}
-</script>
-</body></html>    
 )=====";
 
 const char REQUEST_DENIED[] PROGMEM = R"=====(

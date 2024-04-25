@@ -61,6 +61,13 @@ void handle_pages(httpd_req_t *req)
         return;
        } else
 
+    if(strstr(buf, "ipconf")) 
+       {
+        zendPageIPconfig(req);
+        consoleOut("ipconfig page requested");
+        return;
+       } else
+    
     if(strstr(buf, "timers_gen")) 
        {
          consoleOut("zendpageTimers page requested");
