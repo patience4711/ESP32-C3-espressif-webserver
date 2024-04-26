@@ -46,9 +46,10 @@ void handle_data(httpd_req_t *req)
      //otherwise w'sd wait too long before sending the event that trigger this request
      int target = 0;
      if (ledState != 0 ) target = duty;
+     // so if target == 0, ledState = always 0 too, we dont need to send state 
      String json = "{";
      json += "\"name\":\"" + String(dvName) + "\",";
-     json += "\"state\":\"" + String(ledState) + "\",";
+     // json += "\"state\":\"" + String(ledState) + "\",";
      json += "\"duty\":\"" + String(target) + "\"";
      json += "}";
      httpd_resp_send(req, json.c_str(), HTTPD_RESP_USE_STRLEN);

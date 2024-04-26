@@ -55,7 +55,7 @@ const char HOMEPAGE[] PROGMEM = R"=====(
 #name {
   
 }
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 600px) {
   .bt { height: 16vh;}
 }
 </style>
@@ -139,10 +139,9 @@ var xhttp = new XMLHttpRequest();
           xhttp.open("GET", "/RUNACTION?sw=off", true);
           xhttp.send();
     }
-    //getData();
 }
 
-// request is done on notification of a change
+// request is made when notified about a change
 function getData() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -150,17 +149,16 @@ function getData() {
     if (this.readyState == 4 && this.status == 200) {
       var antwoord = this.responseText;  
       var obj = JSON.parse(antwoord);
-      var state = obj.state;
+      //var state = obj.state;
       document.getElementById("duty").value=obj.duty;
       document.getElementById("demoLPM").innerHTML=obj.duty;
       document.getElementById("NAME").innerHTML=obj.name;
-
-      if (state == "0") {
+      console.log("duty = " + duty);
+      if (obj.duty == "0") {
         btn.classList.remove('bt_on');
       } else {
         btn.classList.add('bt_on');
       }
-    
     }
   };
   xhttp.open("GET", "getData?knop", true);
