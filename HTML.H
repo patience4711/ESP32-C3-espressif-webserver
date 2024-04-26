@@ -26,22 +26,7 @@ function cl() {
 window.location.href='/SHOWHTML?menu';
 }
 </script>
-<style>
-@media only screen and (max-width: 800px) {
-  li a, b {
-    font-size:14px;
-    padding: 14px 16px 10px 12px;
-    width: 30px;
-  }
-  .close {
-  font-size: 32px;
-  width:20px; 
-  padding: 0px 10px;
-}
-.divstijl {width:98vw; }
-input, .sb1 { font-size:20px; }
-}
-</style>
+
 </head>
 )=====";
 //.bt{display:block; width:124px; height:44px; padding:6px; margin:6px; text-align:center; border-radius:6px; color:white; background:red;
@@ -57,29 +42,12 @@ body {
   font-family:'lato',Verdana,Sans-serif;
   font-size:16px;
   }
-.divstijl {
-  background: linear-gradient(#e8edc8, #c8eaed); 
-  padding:0px 0px 0px 0px;
-  width: 50vw;
-  height: 99%; 
-  }
-#msect {
-  display: flex;
-  flex-basis: 100%;
-  align-items: center;
-  margin: 0px 0px;
-  width:96vw;
-}
-#msect:before,
-#msect:after {
-  content: "";
-  flex-grow: 1;
-  margin: 0px 0px;
-}
+.divstijl { background: linear-gradient(#e8edc8, #c8eaed); padding:0px 0px 0px 0px; width: 50vw; height: 99%; }
+#msect { display: flex; flex-basis: 100%; align-items: center; margin: 0px 0px; width:96vw;}
+#msect:before,#msect:after {content: ""; flex-grow: 1; margin: 0px 0px;}
 #bo {width:100%; height:100%; position: absolute; left:0; top:0; background-color:rgba(192,192,192,0.9); color:white; z-index:10; font-size: 90px;
   font-weight: bold; text-align: center; display: none;} 
-#sub { float: left; background:green; display:none }
-#fright {float:right;}
+
 .slider {
   -webkit-appearance: none;
   width: 50%;
@@ -131,83 +99,44 @@ input { font-size:20px; }
 option {
     direction: ltr;
 }
-.sb1 {
-   font-size:20px;
-   height:29px;
-  } 
+.sb1 { font-size:20px; height:29px; } 
  
 tr {height:36px;} 
-input[type=checkbox] {
-    width:24px; 
-    height:24px;
-   }
-ul {
-  list-style-type: none;
-  margin: 0 auto 0 auto;
-  padding: 0;
-  overflow: hidden;
+input[type=checkbox] { width:24px; height:24px; }
+
+/* new menu styling */
+a:link, a:visited {
   background-color: #333;
-  border-radius:6px;
-  width: 96vw;
-  height: 48px;
-}
-
-li {
-  float: left;
-}
-li a:hover {
-  background-color: #ff0808 !important;
-}
-li a, b {
-  display: inline-block;
   color: white;
+  border-radius: 6px;
   text-align: center;
-  padding: 14px 6px 10px;
-  text-decoration: none;
-  width:70px;
-  font-size:20px;  
-}
-a:focus {background-color: red;}
-
-li a:hover {
-  background-color: #ff0808;
-}
-b {
-color: #;
-font-size:18px;
-font-weight:bold;
+  text-decoration: none; /* prevent the underline */
+  display: inline-block;
+  width: 58px;
+  line-height: 48px;
+  margin-right: 2px;
 }
 
-.close {
-  color: red;
-  float: right;
-  font-size: 42px;
-  font-weight: bold;
-  cursor: pointer;
-  width:30px; 
-  padding: 0px 20px;
-}
-.close:hover {color: green;}
+a:hover { background-color: green; color: white;}
+#menu { height:48px; width: 60vw; overflow: hidden; background-color: #333; border-radius:6px;}
+.close { color: red !important; position: static; float:right; font-size: 42px; font-weight: bold; cursor: pointer;}
+
+b { color: #eab3f2; margin-left: 4px; font-size:16px;}
+#sub { float: left; background:green; display:none }
+#fright {float:right;}
 
 @media only screen and (max-width: 800px) {
 .inp3a,{ 
   width:70px;
   font-size:18px;
   }
-  li a, b {
-    font-size:14px;
-    padding: 14px 16px 10px 12px;
-    width: 70px;
-  }
 .divstijl {width:98vw;}
-.close { 
-  font-size: 32px; width:20px; padding: 0px 10px;
-}
+.close { font-size: 32px; width:20px; padding: 0px 10px;}
 input, .sb1 { font-size:16px; }
+.sb1 {height:24px;} 
 body  { font-size:12px; }
-
+#menu {width:98vw;}
 }
-
 
 )=====";
 

@@ -14,7 +14,9 @@ body {font-size:12px;} tr {height:26px;}
 <script type="text/javascript" src="SECURITY"></script>
 <script> function cl() { window.location.href='/SHOWHTML?menu'; }</script>
 </head><body>
-<div id='msect'><ul><li id='fright'><span class='close' onclick='cl();'>&times;</span></ul></div>
+<div id='msect'>
+<div id="menu"><a href="#" class='close' onclick='cl();'>&times;</a></div>
+</div>
 <center>
 <h2>ESP32-SWITCH SYSTEM DATA</h2>
 
@@ -30,7 +32,7 @@ strcpy_P(page, ABOUT);
   int dagen = urens/24;
  
   strcat(page, "<br><table><tr><TH colspan='2'> SYSTEM INFORMATION</th></tr>" );
-  strcat(page, "<tr><td>firmware version<td>ESP32-SWITCH-v0_0</tr>");
+  strcat(page, "<tr><td>firmware version<td>ESP32-SWITCH-v0_2</tr>");
   if ( timeRetrieved ) strcat(page,"<tr><td>time retrieved<td>yes</tr>"); else strcat(page,"<tr><td>time retrieved<td>n</tr>");
   sprintf(temp, "<tr><td>systemtime<td> %d:%d " , hour(), minute());
   switch (dst) {

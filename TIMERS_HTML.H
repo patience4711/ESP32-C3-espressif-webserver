@@ -1,32 +1,20 @@
 const char TIMERCONFIG_START[] PROGMEM = R"=====(
-<style>
-@media only screen and (max-width: 600px) {
-  li a{
-    width: 18px;
-    padding: 14px 2px 10px 16px;
-  }
-  li b{width: 22px;}
-}
-</style>
 
 <body>
 
-<div id='main-sect'>
+<div id='msect'>
 <div id='bo'></div>
-    <ul><li><b>timers:</b></li>
-    <li id='fright'><span class='close' onclick='cl();'>&times;</span></li>
-    <li><a href='/SHOWHTML?timer_ind=0' > 0</a></li>
-    <li><a href='/SHOWHTML?timer_ind=1' > 1</a></li>
-    <li><a href='/SHOWHTML?timer_ind=2' > 2</a></li>
-    <li><a href='/SHOWHTML?timer_ind=3' > 3</a></li>
-    </ul>
+<div id="menu">
+<a href="#" class='close' onclick='cl();'>&times;</a>
+<a href="#" id="sub" onclick='submitFunction("/SHOWHTML?back")'>save</a></div>
+</div>
 </div>
 
-<div id='main-sect'>
-  <center><kop>TIMER CONFIG </kop></center><br>
+<div id='msect'>
+  <center><kop>TIMER SETTINGS </kop></center><br>
 </div>
 
-<div id='main-sect'>
+<div id='msect'>
 <center><div class='divstijl'>
 
 <form id='formulier' method='get' action='parameters' oninput='showSubmit()'>
@@ -34,9 +22,13 @@ const char TIMERCONFIG_START[] PROGMEM = R"=====(
   </div>
 <div><br></form>
 <div id='msect'>
-  <ul>
-  <li id='sub'><a href='#' onclick='submitFunction("/SHOWHTML?back")'>save</a></li>
-  <br></div>
+<div id="menu">
+<b>timers</b>
+<a href='/SHOWHTML?timer_ind=0' > 0</a>
+<a href='/SHOWHTML?timer_ind=1' > 1</a>
+<a href='/SHOWHTML?timer_ind=2' > 2</a>
+<a href='/SHOWHTML?timer_ind=3' > 3</a>
+</div>
 </div>
 </body></html>
  )=====";
@@ -48,7 +40,7 @@ const char TIMERCONFIG_START[] PROGMEM = R"=====(
 <td style='width:40px;'>active?<td><input type='checkbox' name='ta' tActive>
 </table>
 <table>
-<tr><td>on:<td><input class='inp2' name='inw' value='{inx}' pattern='(?:[01]|2(?![4-9])){1}[0-9]{1}:[0-5]{1}[0-9]{1}' title='hh:mm'>
+<tr><td>on:<td><input class='inp4' type='time' name='inw' value='{inx}' title='hh:mm'>
 <td><select name='zonattaan' class='sb1'>
 <option value='0' zonattaan_1>absolute</option>
 <option value='3' zonattaan_4>before sunrise</option>
@@ -57,7 +49,7 @@ const char TIMERCONFIG_START[] PROGMEM = R"=====(
 <option value='2' zonattaan_3>after sunset</option>
 
 </select></td></tr>
-<tr><td>off:<td><input class='inp2' name='uitw' value='{uitx}' pattern='(?:[01]|2(?![4-9])){1}[0-9]{1}:[0-5]{1}[0-9]{1}' title='hh:mm' >
+<tr><td>off:<td><input class='inp4' name='uitw' type='time' value='{uitx}' title='hh:mm' >
 <td><select name='zonattuit' class='sb1'>
 <option value='0' zonattuit_1>absolute</option>
 <option value='3' zonattuit_4>before sunrise</option>

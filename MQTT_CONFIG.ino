@@ -6,10 +6,12 @@ alert("to publish to this device use topic: ESP32-SWITCH/in");
 }
 </script>
 <div id='msect'><div id='bo'></div>
-<ul><li id='fright'><span class='close' onclick='cl();'>&times;</span>
-<li><a href='#' onclick='help()'>help</a></li>
-<li><a href='/RUNACTION?mosqtest'>test</a></ul>
-<li id='sub'><a href='#' onclick='submitFunction("/SHOWHTML?back")'>save</a></li></ul></div>
+<div id="menu">
+<a href="#" class='close' onclick='cl();'>&times;</a>
+<a href="#" id="sub" onclick='submitFunction("/SHOWHTML?back")'>save</a>
+<a href='#' onclick='help()'>help</a></li>
+<a href='/RUNACTION?mosqtest'>test</a></ul>
+</div></div>
 <div id='msect'><kop>MOSQUITTO CONFIGURATION</kop></div>
 <div id='msect'>
   <div class='divstijl'>

@@ -53,6 +53,15 @@ void handle_actions(httpd_req_t *req)
        return;
        } //else
  
+     if(strstr(buf, "sw=fwupdate"))
+     {      
+       consoleOut("reset");
+       //loginBoth(request, "admin");
+       String toSend = F("<!DOCTYPE html><html><head><script type='text/javascript'>setTimeout(function(){ window.location.href='/SHOWHTML?back'; }, 5000 ); </script>");
+       toSend += F("</head><body><center><h2>this feature is currently not installed.");
+       httpd_resp_send(req, toSend.c_str(), HTTPD_RESP_USE_STRLEN); 
+       return;
+       } //else
      if(strstr(buf, "mosqtest"))
      { 
        actionFlag=49;

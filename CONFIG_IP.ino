@@ -15,9 +15,12 @@ function submitF() {
 }
 </script>
 <div id='msect'>
-<ul> <li id="sub"><a href="#" onclick='submitF()'>save</a></li>
-<li id='fright'><span class='close' onclick='cl();'>&times;</span></li>
-</ul></div>
+<div id="menu">
+<a href="#" id="sub" onclick='submitF()'>save</a>
+<a href="#" class='close' onclick='cl();'>&times;</a>
+</div>
+</div>
+
 <div id='msect'><kop>IP ADDRESS SETTINGS</kop></div>
 
 <div id='msect'>

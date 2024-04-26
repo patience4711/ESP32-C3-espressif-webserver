@@ -62,10 +62,9 @@ const char HOMEPAGE[] PROGMEM = R"=====(
 </head>
 <body onload='loadScript()'>
 <div id='msect'>
-<ul>
-
-<li style='float:right;'><a id='haha' href='/SHOWHTML?menu'>menu</a></li>
-</ul>
+<div id="menu">
+<a href="SHOWHTML?menu" style="float:right">menu</a>
+</div>
 </div>
 <div id='msect'>
 <br>

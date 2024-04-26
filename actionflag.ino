@@ -59,8 +59,14 @@ if (actionFlag == 15) {
         MQTT_Client.setCallback ( MQTT_Receive_Callback ) ;
         if (Mqtt_Format != 0) mqttConnect(); // reconnect mqtt after change of settings
     }    
+
     if (actionFlag == 25) {
       actionFlag = 0; //reset the actionflag
+      // how can we make the timers work without a reboot?
+      // put the lamp out and disarm all timers
+      // then recalculate the timing.
+      ledsOffNow(true, false, "system");
+      disarmTimers();
       getTijd(); // recalculate time and automation after change of settings
     }
 

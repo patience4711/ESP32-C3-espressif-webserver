@@ -43,7 +43,7 @@ void zendPageRelevantTimers() {
 //if(request->hasParam("ta")) {
 //dag = request->getParam("ta")->value();  
 //}
-//   if (dag == "on") { timerActive[tKeuze] = '1'; } else { timerActive[tKeuze] = '0';}
+//   if (dag == "on") { [tKeuze] = '1'; } else { [tKeuze] = '0';}
 //    
 //    // eerst terugzetten welke geselecteerd zijn in zonattaan en zonnatuit
 //             String temp = "";
@@ -230,3 +230,9 @@ void test_schakel_uit(int welke) {
               consoleOut("switched off by timer "+ String(welke));
              }
     }
+void disarmTimers() {
+  for(int z=0;z<4;z++) {
+      mustSwitch[z] = false;
+      hasSwitched[z] = false;    
+  }
+}

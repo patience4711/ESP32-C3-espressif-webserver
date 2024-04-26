@@ -1,9 +1,12 @@
 const char GEOPAGE[] PROGMEM = R"=====(
 <body>
+
 <div id='msect'><div id='bo'></div>
-<ul>
-<li id='sub'><a href='#' onclick='submitFunction("/SHOWHTML?back")'>save</a></li>
-<li id='fright'><span class='close' onclick='cl();'>&times;</span></li>
+<div id="menu">
+<a href="#" id="sub" onclick='submitFunction("/SHOWHTML?back")'>save</a>
+<a href="#" class='close' onclick='cl();'>&times;</a>
+</div>
+
 </div>
 <div id='msect'>
 <br><kop>GEOGRAPHICAL SETTINGS</kop><br><br>

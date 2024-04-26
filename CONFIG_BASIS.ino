@@ -2,9 +2,12 @@ const char BASISCONFIG[] PROGMEM = R"=====(
 <body>
 <div id='msect'>
   <div id='bo'></div>
-    <ul><li id='fright'><span class='close' onclick='cl();'>&times;</span>
-    <li id='sub'><a href='#' onclick='submitFunction("/SHOWHTML?back")'>save</a></li></ul><br></div>
 
+<div id="menu">
+<a href="#" id="sub" onclick='submitFunction("/SHOWHTML?back")'>save</a>
+<a href="#" class='close' onclick='cl();'>&times;</a>
+</div>
+</div>
 <div id='msect'>
 <kop>GENERAL SETTINGS</kop>
 </div>
