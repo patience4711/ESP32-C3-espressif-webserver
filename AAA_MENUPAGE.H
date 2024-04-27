@@ -26,7 +26,7 @@ a:link, a:visited { width: 98px;}
 <td><a onclick="return confirm('are you sure?')" href='/RUNACTION?sw=reboot'>reboot</a></td></tr>
 
 <tr><td><a href='/SHOWHTML?mqtt'>mosquitto</a></td><td></td>
-<td><a onclick="return confirm('reset wifi, are you sure?')" href='/RUNACTION?sw=startap'>res wifi</a></td><tr>
+<td><a onclick="return confirm('reset wifi, are you sure?')" href='/RUNACTION?sw=startap'>reset wifi</a></td><tr>
 
 </table>
   

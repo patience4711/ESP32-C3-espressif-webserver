@@ -128,8 +128,6 @@ void handle_params(httpd_req_t *req)
       if(httpd_query_key_value(buf, grap[0], param, sizeof(param)) == ESP_OK ) {
       consoleOut("there is an argument su saved in dag " + String(dag));
 }
- 
-      
       for (int x = 0; x < 7; x++) {
         //grap[x] should be something like "su" mo "mo" etc
         consoleOut("grap[x] = " + String(grap[x])); //can we use that as an argument in:
@@ -154,6 +152,8 @@ void handle_params(httpd_req_t *req)
        timerConfigsave(); // save all in SPIFFS
        consoleOut("timer config saved");
        actionFlag = 25; // recalculate the timers
+       // httpd_resp_send(req, NULL, 0);
+       // the submitfuction changes the url, that is a new request
       return;
     }    
 
@@ -163,7 +163,7 @@ void handle_params(httpd_req_t *req)
           char param[QUERYKEY_MAX_LEN] = {0};
           if (httpd_query_key_value(buf, "ts", param, sizeof(param)) == ESP_OK) duty = atoi(param);
            // String(param).toInt() ?? 
-          //consoleOut("saved duty = " + String(duty));
+           //consoleOut("saved duty = " + String(duty));
           basisConfigsave();
           return;
           //}

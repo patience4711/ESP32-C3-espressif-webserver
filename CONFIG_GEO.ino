@@ -9,7 +9,7 @@ const char GEOPAGE[] PROGMEM = R"=====(
 
 </div>
 <div id='msect'>
-<br><kop>GEOGRAPHICAL SETTINGS</kop><br><br>
+<br><kop>LOCATION SETTINGS</kop><br><br>
 </div>
 <div id='msect'>
   <div class='divstijl' style='height:52vh;'>

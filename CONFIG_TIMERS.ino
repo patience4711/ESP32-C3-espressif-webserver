@@ -29,100 +29,25 @@ void zendPageRelevantTimers() {
 
 
 
-//// deze functie wordt opgeroepen na timer instellingen
-////*******************************************************************************************
-////              voorbereiden voor opslaan van de gegevens
-//// *****************************************************************************************
-//void handleTimerconfig(httpd_req_t *req) { // form action = handletimerConfig
-//// we krijgen alleen serverargumenten van de betreffende timer bijv zonattaan0 dus
-////lees de serverargumenten en plaats deze in de betreffende variabelen
-//// de waarde in de select voor de actieve autom slaan we altijd op
-//  // strcpy(timer, request->arg("timer").c_str());
-//ledState = 0; // anders vertraagt alles
-//String dag = "";
-//if(request->hasParam("ta")) {
-//dag = request->getParam("ta")->value();  
-//}
-//   if (dag == "on") { [tKeuze] = '1'; } else { [tKeuze] = '0';}
-//    
-//    // eerst terugzetten welke geselecteerd zijn in zonattaan en zonnatuit
-//             String temp = "";
-//             char tempChar[1]="";
-//    
-//              temp = request->arg("zonattaan").c_str(); // arumenten zijn 0 tm 6
-//              temp.toCharArray(tempChar, 2);
-//              relToSunOn[tKeuze]=tempChar[0];  // de variabele relToSunOn bijwerken
-//    
-//              consoleOut("tempChar = "); consoleOut(String(tempChar));
-//              consoleOut("relToSunOn = "); consoleOutln(String(relToSunOn));
-//    
-//              temp = request->arg("zonattuit").c_str(); // arumenten zijn 0 tm 4
-//              temp.toCharArray(tempChar, 2);
-//              relToSunOff[tKeuze]=tempChar[0];         
-//              consoleOut("relToSunOff = "); consoleOutPrintln(String(relToSunOff));                    
-//            
-//              //nu de inschakeltijd
-//              temp = request->arg("inw").c_str();
-//              temp.toCharArray(tempChar, 6);
-//              for (int i=0; i<5; i++){
-//                 switchOn[tKeuze*5+i] = tempChar[i];
-//              }
-//              temp = request->arg("uitw").c_str();
-//              temp.toCharArray(tempChar, 6);
-//              for (int i=0; i<5; i++){
-//                 switchOff[tKeuze*5+i] = tempChar[i];
-//              }      
-//              // de waarden van de dagen in een array weekdag opslaan
-//              char *grap[] = {"zo", "ma", "di", "wo", "do", "vr", "za"};
-//              String wd = ""; 
-////              String dag = "";
-//              //Char ddag[7] = "  
-//              //for (int i = 0; i<aantal; i++) {    
-//                   for (int x = 0; x < 7; x++) {
-//                    dag = request->arg(grap[x]) ; //dus zo+1
-//                    //bijv dag=server.arg(zo1)
-//                     if (dag == "on") {
-//                    // als tKeuze=5 dan begint het bij 35 en eindigt bij 42
-//                    // als tKeuze=0 dan begint het bij 0 en eindigt bij 6  
-//                    weekDag[tKeuze*7+x] = 'y'; 
-//                    } else {
-//                    weekDag[tKeuze*7+x] = 'n';
-//                    }  
-//                  }
-//// deze funties werken
-//// nu zenden we de confirm 
-// //consoleOutln("we gaan een nieuwe webpage inlezen in toSend");
-// // toSend = FPSTR(CONFIRM);
-//  
-// // request->send(200, "text/html", toSend); //send the html code to the client
-//
-// timerConfigsave(); // alles opslaan in SPIFFS
-// Serial.println("timer instellingen opgeslagen");
-////CANDLE_OFF(); // anders reboot ie pas aan het eind van een programma
-//actionFlag = 25; // recalculate the timmers
-//}
-  
-
-
-// deze functie geeft de waarde van vervang terug
-// input is bijvoorbeeld "1" en zooattaan
+// this function returns the value of vervang 
+// input instace  "1" en zooattaan
 String zonatt_replace( String argument1, String argument2) {
 
 String vervang = "";
 switch (argument1[0]) {
-  case '0': //absoluut
+  case '0': //absolute
     vervang = argument2 + "_1";
     break;
-  case '1': //voor zons ondergang
+  case '1': //before sunset
     vervang = argument2 + "_2";
     break;
-  case '2': //na zons ondergang
+  case '2': //after sunset
     vervang = argument2 + "_3";
     break;
-  case '3': // voor zons opkomst
+  case '3': //before sunrise
     vervang = argument2 + "_4";
     break;
-  case '4': // na zons opkomst
+  case '4': //after sunrise
     vervang = argument2 + "_5";
     break;
     }
@@ -131,7 +56,7 @@ return vervang;
 
 
 // **********************************************************************
-//        de timerpagina met de actuele waarden terugzetten
+//        replace the timerpage with the actuele values
 // **********************************************************************
 void plaats_timerpage() {
 // place the timerpage 
@@ -150,13 +75,11 @@ void plaats_timerpage() {
     //weekDag
       consoleOut("replace checkboxes to show the checked ones");
     // do for this time, 7x
-    //int i = tKeuze;
-        for(int x=0; x<7; x++){ // bij 3 is dit van 21 tot 27 kleiner dan 28
-
+    for(int x=0; x<7; x++)
+    { // bij 3 is dit van 21 tot 27 kleiner dan 28
           vervang = String(grap[x]); // als i=3 dan van 21-21 naar 27
-
-               if (weekDag[tKeuze*7+x] == 'y') { toSend.replace(vervang, "checked");}
-         }
+          if (weekDag[tKeuze*7+x] == 'y') { toSend.replace(vervang, "checked");}
+    }
     
     // we have a char with all times, can we translate to a field in the page?
     //String temp = "";
@@ -177,7 +100,7 @@ void schakelen() {
     //                                   switch by timer timer 0  
     // *******************************************************************************************
     if (timerActive[0]=='1' && mustSwitch[0] && !hasSwitched[1] && !hasSwitched[2] && !hasSwitched[3] ) {  //als niet door timer1 of 2 is ingeschakeld
-    //Serial.println("timer 0 moet schakelen");
+    //Serial.println("timer 0 should switch");
     test_schakel_in(0);
     test_schakel_uit(0);
     }
@@ -217,11 +140,10 @@ void test_schakel_in(int welke) {
             }
 }
  
-void test_schakel_uit(int welke) {
-  // if switch manual switched on it should not switch of by a timer, checkTimers takes care for that
-  // alleen uitschakelen als event = 3 of 4 of 5 0f 6 : als now() groter is dan de uitschakeltijd
+  void test_schakel_uit(int welke) {
+  // if switch manual switched on it should not switch of by a timer, checkTimers() takes care for that
   // welke is het nummer van de timer
-         if ( now() > uitschakeltijd[welke] && hasSwitched[welke] ) { // als event 3 4 5 of 6 is
+         if ( now() > uitschakeltijd[welke] && hasSwitched[welke] ) { 
               ledsOffNow(true, false, "timer"+String(welke)); //
               event = 23 + welke; // 13 or 14 or 15 or 16
               // if witched off the flags are set false to prevent repetitions
@@ -230,9 +152,10 @@ void test_schakel_uit(int welke) {
               consoleOut("switched off by timer "+ String(welke));
              }
     }
-void disarmTimers() {
-  for(int z=0;z<4;z++) {
-      mustSwitch[z] = false;
-      hasSwitched[z] = false;    
+
+  void disarmTimers() {
+    for(int z=0;z<4;z++) {
+        mustSwitch[z] = false;
+        hasSwitched[z] = false;    
+    }
   }
-}

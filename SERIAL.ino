@@ -6,20 +6,11 @@ byte SerialInByte;
 // first check if there is enough data, at least 13 bytes
 delay(200); //we wait a little for more data as the esp seems slow
 if(Serial.available() < 13 ) {
-  // les then 13, we can't expect more so we give up 
+  // less then 13, we can't expect more so we give up 
   while(Serial.available()) { Serial.read(); } // make the buffer empty 
   Serial.println("invalid command, abort " + String(InputBuffer_Serial));
  return;
 }  
-
-//if(Serial.available() < 4 ) { 
-//  delay(200); //we wait a little for more data as the esp seems slow
-//  if(Serial.available() < 13 ) {
-//    while(Serial.available()) { Serial.read(); } // make the buffer empty
-//    Serial.println("invalid command, abort " + String(InputBuffer_Serial));
-//    return;
-//  }
-//}
 
 // now we know there are at least 13 bytes so we read them
  while(Serial.available()) {
@@ -56,11 +47,10 @@ if(Serial.available() < 13 ) {
         
         } else
 
-        if (strcasecmp(InputBuffer_Serial,"SENDSOCKET-EVENT")==0) {
-          Serial.println("\nsending an event ! \n");
-           eventSend(0);
-           delay(500);
-           eventSend(1);
+        if (strcasecmp(InputBuffer_Serial,"TESTING-GETTIME")==0) {
+          Serial.println("\nget the time ! \n");
+           getTijd();
+           // check how this affects timers that have been switched on
            return;
         } else
 

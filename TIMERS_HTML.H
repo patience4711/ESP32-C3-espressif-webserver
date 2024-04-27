@@ -32,11 +32,9 @@ const char TIMERCONFIG_START[] PROGMEM = R"=====(
 </div>
 </body></html>
  )=====";
-// voor geen sonoff
-
- 
+                                                                        
  const char TIMER_GENERAL[] PROGMEM = R"=====(
-<center><table><tr><td style='width:100px;'><h4> TIMER {nr} </h4>
+<center><table><tr><td style='width:180px;color:#e207fa;'><h1> TIMER {nr} </h1>
 <td style='width:40px;'>active?<td><input type='checkbox' name='ta' tActive>
 </table>
 <table>

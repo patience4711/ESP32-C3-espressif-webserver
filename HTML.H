@@ -136,6 +136,7 @@ input, .sb1 { font-size:16px; }
 .sb1 {height:24px;} 
 body  { font-size:12px; }
 #menu {width:98vw;}
+kop { font-size: 7vw;}
 }
 
 )=====";

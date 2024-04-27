@@ -221,8 +221,10 @@ void loop() {
   } //
 
   // we recalculate the switchtimes for this day when there is a new date
-  // if retrieve fails, day will not be datum, so we keep trying by healthcheck
-  if (day() != datum && hour() > 2) // if date overflew and later then 2
+  // if retrieve fails, day will not be datum, so we keep trying. 
+  // if date overflew, later than 2 and lamp out we get the time and  
+  // re-calculate the timers
+  if (day() != datum && hour() > 2 && ledState == 0) 
   { 
      getTijd(); // retrieve time and recalculate the switch times
   }
@@ -242,11 +244,14 @@ void loop() {
     
   test_actionFlag();
   
-// ****************** vergeten lamp beveiliging *********************************************
-
+// ****************** forgotten light security *********************************************
+/* switched off when switched on, not by a timer 
+ *   
+ *
+*/
 if(!hasSwitched[0] && !hasSwitched[1] && !hasSwitched[2] && !hasSwitched[3] ) // not switched by a timer 
    {
-      if(ledc_get_duty(LEDC_MODE,LEDC_CHANNEL) > 0) // the leds are on 
+      if(ledState == 1 ) // the leds are on and not switched by a timer
       {
            if (now() > inschakeltijdstip + asoTime) // asoTime in secs 
            //if (now() > inschakeltijdstip + ((asouur * 60 + asominuut) * 60))
@@ -341,7 +346,7 @@ void ledblink(int i, int wacht) {
              consoleOut("events message = " + String(sse_buf));
              httpd_socket_send(mySocketHD, mySocketFD, sse_buf, strlen(sse_buf), 0);
          } else {
-             //events.send( "getData", "message"); //getGeneral triggered
+             //events.send( "getData", "message"); //getData triggered
              snprintf(sse_buf, sizeof(sse_buf), sse_format, "getdata"); 
              consoleOut("events message = " + String(sse_buf));
              httpd_socket_send(mySocketHD, mySocketFD, sse_buf, strlen(sse_buf), 0);
