@@ -135,6 +135,7 @@ int mySocketFD;
   
   String toSend = ""; // we use this string only to send webpages
   int duty = 256; //pwm dutycycle
+  int defaultDuty = 0;
   int ledState = 0; // on / off flag 
 
   WiFiClient espClient ;
@@ -378,9 +379,11 @@ void ledblink(int i, int wacht) {
       // we invert the dutyvalue
       //ledcWrite(0,256-duty);
       inschakeltijdstip = now();
-      //set_pwm(duty);
-      fade_pwm(duty);
-      consoleOut("on: duty cycle set to " + String(duty));
+      // duty can be zero if we set the slider to 0
+      // in that case we should use the default value
+      if(duty == 0) duty = defaultDuty; 
+        fade_pwm(duty); 
+        consoleOut("on: duty cycle set to " + String(duty));
       ledState = 1;
       if( zend ) { sendMqttswitch(); }// mqtt switch state
       if( check ) {checkTimers();} // disarm timers that are on  

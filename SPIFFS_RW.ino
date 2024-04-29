@@ -99,7 +99,7 @@ void basisConfigsave() {
     json["userPwd"] = userPwd;
     json["dvName"] = dvName;
     json["duty"] = duty;
-//    json["timersEnabled"] = timersEnabled;
+    defaultDuty = duty;
     json["aso"] = aso;
     
     File configFile = SPIFFS.open("/basisconfig.json", "w");

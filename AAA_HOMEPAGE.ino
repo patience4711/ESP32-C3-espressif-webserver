@@ -10,36 +10,49 @@ const char HOMEPAGE[] PROGMEM = R"=====(
   background-color: yellow;
   font-size: 20px;
 }
-.bt {
-  width:30vw;
-  height:26vh;
-  padding:6px;
-  margin:6px;
-  text-align:center;
-  border-radius:15px;
-  color:white;
-  background:#262626;
-  font-weight:bold;
-  font-size:4vw;
-  box-shadow: 0 9px #999;
-  }
+.btlabel {text-align:center; color: red;font-size:25px;}
+/* toggle in label designing */
+.toggle {
+    position : relative ;
+    display : inline-block;
+    width : 72px;
+    height : 130px;
+    background-color: #e8f5f7;
+    border-radius: 36px;
+    border: 2px solid blue;
+}
+       
+/* After slide changes */
+.toggle:after {
+    content: '';
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: black;
+    top: 58px; 
+    left: 1px;
+    transition:  all 0.5s;
+}
 
-.bt::before{
-  content: "SWITCH ON";
+       
+/* Checkbox checked effect */
+.checkbox:checked + .toggle::after {
+    transform: translate(0px, -58px);
+    background:orange;
+    box-shadow: 0px 0px 20px 10px red;
 }
-.bt_on{
-  background:yellow;
-  color:black;
-  box-shadow: 0px 0px 20px 15px red;
-  }
-.bt_on::before{
-  content:"SWITCH OFF";
+       
+/* Checkbox checked toggle label bg color */
+.checkbox:checked + .toggle {
+    background-color: #e8f5f7;
 }
-.bt:active, .bt2:active {
-  background-color: #3e8e41;
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
+       
+/* Checkbox vanished */
+.checkbox { 
+    display : none;
 }
+
 .bt2 {
   font-size:16px;
   padding: 10px;
@@ -49,14 +62,11 @@ const char HOMEPAGE[] PROGMEM = R"=====(
   color:white;
   background: #8742f5;
   box-shadow: 0 6px #302442;
+  display: block;
   }
 
-
-#name {
-  
-}
 @media only screen and (max-width: 600px) {
-  .bt { height: 16vh;}
+
 }
 </style>
 </head>
@@ -71,15 +81,18 @@ const char HOMEPAGE[] PROGMEM = R"=====(
 <kop><span id="NAME">HAIPS</span></kop>
 <br></div>
 <div id='msect'>
-  <div class='divstijl' id = 'maindiv' style='height:70vh; background: grey;'>
-  <center> <br><span id='pwdby'style='font-size:11px; margin:auto; display:table; color:white;'>powered by Hansiart</span><br>
-  <button class='bt' id='knop' onclick='myFunction()'></button></center>
-  <br>
-  <br><br>
+  <div class='divstijl' id = 'maindiv' style='height:74vh; background: grey;'>
+  <center> <br><span id='pwdby'style='font-size:11px; margin:auto; display:table; color:white;'>powered by Hansiart</span>
+<br>
 
+<table><tr><td class="btlabel">on</td></tr>
+<tr><td><input type="checkbox" id="knop" class="checkbox" onclick="myFunction()" />
+<label for="knop" class="toggle"></label></td>
+<tr><td class="btlabel">off</td></tr></table></center>
+<br>
 <center><input type="range" id="duty" name="DT" min="0" max="8192" value="{DT}" class="slider" onchange="sliderUpdate()" list="tickmarks">
 <datalist id="tickmarks"><option>0</option><option>5</option><option>10</option><option>15</option><option>20</option></datalist>
-<br><br><button class="bt2" onClick='savePWM()'>dim value : <span id="demoLPM"</span></button>
+<br><br><br><button class="bt2" onClick='savePWM()' id='saveBt'>dim value : <span id="demoLPM"</span></button>
 </div><br><br>
 </div></body>
 
@@ -108,7 +121,6 @@ var veld = document.getElementById('demoLPM');
 function sliderUpdate() {
   console.log("sliderUpdate");
   veld.style.color = "red";
-//  veld.style.outline = "thick solid";  
   var outputLPM = document.getElementById("demoLPM");
   veld.innerHTML = sldr.value;
   sldr.oninput = function() { veld.innerHTML = this.value; }
@@ -119,26 +131,32 @@ function sliderUpdate() {
   var url = "getData?sldr=" + sldrPos;
   xhttp.open("GET", url, true);
   xhttp.send();
+  // if the slider is set to 0, we cannot save that value as default, it
+  // will be confusing. So we hide the button then
+  if (sldrPos==0) {
+    btn2.style.display="none"; 
+  } else {
+    btn2.style.display="block"; 
+  }
+
 }
 
-
-// deze functie reageert op de onclick van de knop
-const btn = document.getElementById('knop');
 function loadScript() {
 // the first time we load the settings at once
 getData();
 }  
+// this function reacts on the onclick of the toggleswitch
+const btn = document.getElementById('knop');
+const btn2 = document.getElementById('saveBt');
 function myFunction() {
 var xhttp = new XMLHttpRequest();  
-    if(!btn.classList.contains('bt_on')) {
-          btn.classList.add('bt_on');
-          xhttp.open("GET", "/RUNACTION?sw=on", true);
-          xhttp.send();
-    } else {
-          btn.classList.remove('bt_on'); 
-          xhttp.open("GET", "/RUNACTION?sw=off", true);
-          xhttp.send();
-    }
+if(btn.checked == true) {
+      xhttp.open("GET", "/RUNACTION?sw=on", true);
+      xhttp.send();
+  } else {
+      xhttp.open("GET", "/RUNACTION?sw=off", true);
+      xhttp.send();
+  }
 }
 
 // request is made when notified about a change
@@ -155,10 +173,13 @@ function getData() {
       document.getElementById("NAME").innerHTML=obj.name;
       console.log("duty = " + duty);
       if (obj.duty == "0") {
-        btn.classList.remove('bt_on');
+        btn.checked=false;
+        // if the dutyvalue null we hide the savebutton
+        btn2.style.display="none";
       } else {
-        btn.classList.add('bt_on');
-      }
+        btn.checked=true;
+        btn2.style.display="block";
+      }      
     }
   };
   xhttp.open("GET", "getData?knop", true);

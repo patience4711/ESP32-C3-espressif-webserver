@@ -50,10 +50,11 @@ body {
 
 .slider {
   -webkit-appearance: none;
-  width: 50%;
+  width: 70%;
   height: 25px;
   background: #dcffec;
   outline: none;
+  border-radius: 10px;
   opacity: 0.7;
   -webkit-transition: .2s;
   transition: opacity .2s;
@@ -66,12 +67,14 @@ body {
   appearance: none;
   width: 25px;
   height: 25px;
+  border-radius: 50%;
   background: #4CAF50;
   cursor: pointer;
 }
 .slider::-moz-range-thumb {
   width: 25px;
   height: 25px;
+  border-radius: 50%;
   background: #4CAF50;
   cursor: pointer;
 }
