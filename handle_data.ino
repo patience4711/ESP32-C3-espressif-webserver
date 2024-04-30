@@ -29,7 +29,7 @@ void handle_data(httpd_req_t *req)
       if (httpd_query_key_value(buf, "sldr", param, sizeof(param)) == ESP_OK) duty = atoi(param);
       consoleOut("Found URL query parameter sldr");
       consoleOut("param = " + String(param));
-      inschakeltijdstip = now()-10;
+      switchonMoment = now()-10;
       if(duty == 0) ledState = 0; else ledState = 1;
       set_pwm(duty);
       consoleOut("duty cycle set to " + String( ledc_get_duty(LEDC_MODE, LEDC_CHANNEL) ) ); 
@@ -55,6 +55,34 @@ void handle_data(httpd_req_t *req)
      httpd_resp_send(req, json.c_str(), HTTPD_RESP_USE_STRLEN);
      json = String(); 
      }
+
+     if(strstr(buf, "status")) {
+     char param[QUERYKEY_MAX_LEN] = {0};
+     int aantal;
+     if (httpd_query_key_value(buf, "status", param, sizeof(param)) == ESP_OK) aantal = atoi(param);
+     // consoleOut("Found URL query parameter ");
+     // consoleOut("param = " + String(param)); 
+     // link = getData?status=0
+char temp[100];
+     String json = "{";
+     json += "\"timerActive\":\"" + String(timerActive) + "\",";
+     sprintf(temp, "day:%d hr:%d min:%d ", day(daystartTime), hour(daystartTime),minute(daystartTime)); 
+     json += "\"daystartTime\":\"" + String(temp) + "\",";
+     sprintf(temp, "day:%d hr:%d min:%d ", day(switchonTime[aantal]), hour(switchonTime[aantal]),minute(switchonTime[aantal])); 
+     json += "\"switchOn\":\"" + String(temp) + "\",";
+     sprintf(temp, "day:%d hr:%d min:%d ", day(switchoffTime[aantal]), hour(switchoffTime[aantal]),minute(switchoffTime[aantal]));
+     json += "\"switchOff\":\"" + String(temp) + "\",";
+     
+     json += "\"state\":\"" + String(ledState) + "\",";
+     json += "\"duty\":\"" + String(duty) + "\",";
+     json += "\"defaultDuty\":\"" + String(defaultDuty) + "\"";
+     
+     json += "}";
+     httpd_resp_send(req, json.c_str(), HTTPD_RESP_USE_STRLEN);
+     json = String(); 
+     }  
+    
+    
     }
   } 
 free(buf);

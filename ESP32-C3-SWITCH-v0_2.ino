@@ -68,11 +68,12 @@ int mySocketFD;
   WiFiUDP Udp; 
 
 // variables concerning time and timers
-  time_t dagbegintijd = 0;
-  time_t uitschakeltijd[4] = {0};
-  time_t inschakeltijd[4] = {0};
-  time_t inschakeltijdstip = 0;
-
+  time_t daystartTime = 0;
+  time_t switchoffTime[4] = {0};
+  time_t switchonTime[4] = {0};
+  time_t switchonMoment = 0;
+  time_t sunset = 0;
+  time_t sunrise = 0; 
   int dst;
   char timerActive[5] = "0000";
   char relToSunOn[5] = "0000"; 
@@ -97,8 +98,7 @@ int mySocketFD;
   #define TIMERCOUNT  4
   bool mustSwitch[4] = {false, false, false, false};
   bool hasSwitched[4] = {false, false, false, false};
-  time_t sunset = 0;
-  time_t sunrise = 0;  
+ 
 
 // variables mqtt ********************************************
   char  Mqtt_Broker[30]=    {"192.168.0.100"};
@@ -114,11 +114,11 @@ int mySocketFD;
   //int dst;
 
   //char messageHead[5];
-  int   event = 0; // a multi purpose variable
+  int event = 0; // a multi purpose variable
   int diagNose = 1; // initial true, can be set in serial (saved in eeprom)
-  int tKeuze = 0;
+  int tKeuze = 0; // which timer
   uint8_t actionFlag = 0;
-  char InputBuffer_Serial[50]; // need to be global
+  //char InputBuffer_Serial[50]; // need to be global
   char requestUrl[12] = {""}; // to remember from which webpage we came  
 
   int networksFound = 0; // used in the portal
@@ -216,7 +216,7 @@ void setup() {
 void loop() {
   // erorchecks
   int aantal = 0;
-  if (dagbegintijd < 10000 && aantal < 3 && WiFi.status() == WL_CONNECTED) {
+  if (daystartTime < 10000 && aantal < 3 && WiFi.status() == WL_CONNECTED) {
     getTijd(); // does all the calculations
     aantal += 1;
   } //
@@ -254,8 +254,8 @@ if(!hasSwitched[0] && !hasSwitched[1] && !hasSwitched[2] && !hasSwitched[3] ) //
    {
       if(ledState == 1 ) // the leds are on and not switched by a timer
       {
-           if (now() > inschakeltijdstip + asoTime) // asoTime in secs 
-           //if (now() > inschakeltijdstip + ((asouur * 60 + asominuut) * 60))
+           if (now() > switchonMoment + asoTime) // asoTime in secs 
+           //if (now() > switchonMoment + ((asouur * 60 + asominuut) * 60))
            {
               consoleOut(" switched off by security");
               ledsOffNow(true, false, "aso");
@@ -378,7 +378,7 @@ void ledblink(int i, int wacht) {
    void ledsOnNow(bool zend, bool check, String who) {
       // we invert the dutyvalue
       //ledcWrite(0,256-duty);
-      inschakeltijdstip = now();
+      switchonMoment = now();
       // duty can be zero if we set the slider to 0
       // in that case we should use the default value
       if(duty == 0) duty = defaultDuty; 

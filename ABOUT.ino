@@ -41,7 +41,10 @@ strcpy_P(page, ABOUT);
     case 0: strncat(temp, "no dst set</td>", 19 ); 
   }
   strcat(page, temp);
-  
+  sprintf(temp, "<tr><td>sun-rise/set<td> %d:%d - %d:%d " , hour(sunrise), minute(sunrise) ,hour(sunset), minute(sunset));
+  strcat(page, temp);
+//  sprintf(temp, "<tr><td>sunset<td> %d:%d " , hour(sunset), minute(sunset));
+//  strcat(page, temp);
   sprintf(temp, "<tr><td>system uptime<td>%d d %d h %d m </td>", dagen, urens-dagen*24, minutens-urens*60);
   strcat(page, temp);
   sprintf(temp, "<tr><td>wifi signalstrength<td>%lddB</td>", WiFi.RSSI());
@@ -79,6 +82,5 @@ strcpy_P(page, ABOUT);
     //Serial.println("page = " + String(page));
     Serial.println("length = " + String(strlen(page)));
     httpd_resp_send(req, page, HTTPD_RESP_USE_STRLEN);
-    //request->send(200, "text/html", page); //send the html code to the client
     memset(page, 0, sizeof(page));
 }

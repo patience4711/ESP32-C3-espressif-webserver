@@ -99,7 +99,6 @@ void basisConfigsave() {
     json["userPwd"] = userPwd;
     json["dvName"] = dvName;
     json["duty"] = duty;
-    defaultDuty = duty;
     json["aso"] = aso;
     
     File configFile = SPIFFS.open("/basisconfig.json", "w");
@@ -189,6 +188,7 @@ bool file_open_for_read(String bestand) {
                     if(jsonStr.indexOf("dvName") > 0)  {strcpy(dvName, doc["dvName"]);}
                     if(jsonStr.indexOf("userPwd") > 0) { strcpy (userPwd, doc["userPwd"] );}
                     if(jsonStr.indexOf("duty") > 0)    {duty = doc["duty"].as<int>();}
+                        defaultDuty = duty;
                     if(jsonStr.indexOf("aso") > 0){ strcpy(aso, doc["aso"]);}
 //Serial.println("spiffs dvName read : " + String(dvName));
               }            
